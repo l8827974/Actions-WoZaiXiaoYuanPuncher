@@ -93,7 +93,10 @@ def contrast_date(sign_message):
     # 得到系统的日期和时间
     sys_time_info = datetime.datetime.now(pytz.timezone('Asia/Shanghai'))
     sys_date_now = sys_time_info.date()
-    sys_time_now = time.strftime("%H:%M", time.gmtime())
+    sys_time_now = time.strftime("%H:%M", time.gmtime(+8))
+    print(sys_time_info)
+    print(sys_date_now)
+    print(sys_time_now)
 
     # 判断打卡的日期和今天的日期是否相同
     if str(sys_date_now) == sign_date_str:
