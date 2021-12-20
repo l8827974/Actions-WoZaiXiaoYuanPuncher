@@ -93,7 +93,7 @@ def contrast_date(sign_message):
     # 得到系统的日期和时间
     sys_time_info = datetime.datetime.now(pytz.timezone('Asia/Shanghai'))
     sys_date_now = sys_time_info.date()
-    sys_time_now = time.strftime("%H:%M", time.gmtime(+8))
+    sys_time_now = sys_time_info.strftime("%H:%M")
     print(sys_time_info)
     print(sys_date_now)
     print(sys_time_now)
