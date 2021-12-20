@@ -2,6 +2,15 @@ import datetime
 import requests
 import json
 import time
+import os
+import hmac
+import hashlib
+import base64
+import utils
+import urllib
+import urllib.parse
+from urllib.parse import urlencode
+from urllib3.util import Retry
 
 data = utils.processJson(".cache/cache.json").read()
 jwsession = data['jwsession']  
