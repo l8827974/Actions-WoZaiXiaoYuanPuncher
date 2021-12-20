@@ -1,4 +1,4 @@
-name: WZXY_DailyReport
+name: dk
 
 on:
   workflow_dispatch:
@@ -7,7 +7,7 @@ on:
 
   schedule:
   # Github Action 使用世界标准时间（UTC），北京时间（UTC+8）转换为世界标准时需要减去8小时
-    - cron:  '1 11 * * *' # 默认在每天 UTC 12:30 和 23:30 （北京时间 20:30 和 7:30）执行
+    - cron:  '30 21 * * *' # 默认在每天 UTC 12:30 和 23:30 （北京时间 20:30 和 7:30）执行
 
 jobs:
   USER_01:
@@ -48,7 +48,7 @@ jobs:
         WZXY_PROVINCE: ${{secrets.PROVINCE}}
         WZXY_TOWNSHIP: ${{secrets.TOWNSHIP}}
         WZXY_STREET: ${{secrets.STREET}}
-      run: python wzxy-dailyreport.py
+      run: dk.py
   
   ## 多账户配置示例，请复制下面的代码后取消注释再修改，粘贴时注意缩进
   # USER_02:    ## Jobs名，注意修改序号
