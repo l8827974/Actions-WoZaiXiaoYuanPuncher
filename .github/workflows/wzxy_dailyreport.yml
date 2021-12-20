@@ -1,4 +1,4 @@
-name: WZXY_DailyReport
+name: xianshiyou
 
 on:
   workflow_dispatch:
