@@ -8,6 +8,7 @@ import json
 import time
 import os
 import hmac
+import pytz
 import hashlib
 import base64
 import urllib
@@ -90,9 +91,9 @@ def contrast_date(sign_message):
     sign_time_str_end = str(sign_message['end']).split(" ")[1]
 
     # 得到系统的日期和时间
-    sys_time_info = datetime.datetime.now()
+    sys_time_info = datetime.datetime.now(pytz.timezone('Asia/Shanghai'))
     sys_date_now = sys_time_info.date()
-    sys_time_now = time.strftime("%H:%M", time.localtime())
+    sys_time_now = time.strftime("%H:%M", time.gmtime())
 
     # 判断打卡的日期和今天的日期是否相同
     if str(sys_date_now) == sign_date_str:
