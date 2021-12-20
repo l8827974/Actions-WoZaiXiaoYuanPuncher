@@ -2,43 +2,6 @@ import datetime
 import requests
 import json
 import time
-import requests
-import json
-import os
-import time
-import hmac
-import hashlib
-import base64
-import utils
-import urllib
-import urllib.parse
-from urllib.parse import urlencode
-from urllib3.util import Retry
-
-class WoZaiXiaoYuanPuncher:
-    def setJwsession(self, jwsession):
-        # 如果找不到cache,新建cache储存目录与文件
-        if not os.path.exists('.cache'): 
-            print("正在创建cache储存目录与文件...")
-            os.mkdir('.cache')
-            data = {"jwsession": jwsession}
-        elif not os.path.exists('.cache/cache.json'):
-            print("正在创建cache文件...")
-            data = {"jwsession": jwsession}
-        # 如果找到cache,读取cache并更新jwsession
-        else:
-            print("找到cache文件，正在更新cache中的jwsession...")
-            data = utils.processJson('.cache/cache.json').read()
-            data['jwsession'] = jwsession                 
-        utils.processJson(".cache/cache.json").write(data)
-        self.jwsession = data['jwsession']  
-    
-    # 获取JWSESSION
-    def getJwsession(self):
-        if not self.jwsession:  # 读取cache中的配置文件
-            data = utils.processJson(".cache/cache.json").read()
-            self.jwsession = data['jwsession']  
-        return self.jwsession
 
 
 # 我在校园jwsession,抓包获得
