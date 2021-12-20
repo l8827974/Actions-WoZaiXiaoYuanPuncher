@@ -62,6 +62,7 @@ def getJwsession(self):
     return self.jwsession
 
 # 我在校园jwsession,抓包获得
+jwsession = self.getJwsession()
 # 在pushplus网站中可以找到 http://pushplus.hxtrip.com/
 pushplus_token = 'cd51aa7b1a2f44259e7630ad316dfa64'
 
