@@ -11,8 +11,11 @@ import hashlib
 import base64
 import utils
 import urllib
-import urllib.parse 
+import urllib.parse
+from urllib.parse import urlencode
+from urllib3.util import Retry
 
+class WoZaiXiaoYuanPuncher:
     def setJwsession(self, jwsession):
         # 如果找不到cache,新建cache储存目录与文件
         if not os.path.exists('.cache'): 
