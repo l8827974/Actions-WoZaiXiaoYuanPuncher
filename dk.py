@@ -22,17 +22,17 @@ class WoZaiXiaoYuanPuncher:
         # 打卡结果
         self.status_code = 0
         # 登陆接口
-        self.loginUrl = "https://student.wozaixiaoyuan.com/sign/getSignMessage.json "
+        self.loginUrl = "https://gw.wozaixiaoyuan.com/basicinfo/mobile/login/username"
         # 请求头
         self.header = {
-            "Host": "student.wozaixiaoyuan.com",
+            "Accept-Encoding": "gzip, deflate, br",
             "Connection": "keep-alive",
-            "charset": "utf-8",
-            "Content-Type": "application/x-www-form-urlencoded",
-            "User-Agent": "Mozilla/5.0 (Linux; Android 6.0.1; M2 E Build/MMB29U; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/78.0.3904.62 XWEB/2853 MMWEBSDK/20210501 Mobile Safari/537.36 MMWEBID/5060 MicroMessenger/8.0.6.1900(0x2800063D) Process/appbrand0 WeChat/arm64 Weixin NetType/WIFI Language/zh_CN ABI/arm64 MiniProgramEnv/android",
-            "Accept-Encoding": "gzip,compress,br,deflate",
-            "Referer": "https://servicewechat.com/wxce6d08f781975d91/182/page-frame.html"
-            
+            "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/8.0.13(0x18000d32) NetType/WIFI Language/zh_CN miniProgram",
+            "Content-Type": "application/json;charset=UTF-8",
+            "Content-Length": "2",
+            "Host": "gw.wozaixiaoyuan.com",
+            "Accept-Language": "en-us,en",
+            "Accept": "application/json, text/plain, */*"
         }
         # 请求体（必须有）
         self.body = "{}"
@@ -82,180 +82,49 @@ class WoZaiXiaoYuanPuncher:
         return self.jwsession
 
     # 获取打卡列表，判断当前打卡时间段与打卡情况，符合条件则自动进行打卡
-    def PunchIn(self):
-        print("获取打卡列表中...")
-        url = "https://student.wozaixiaoyuan.com/sign/getSignMessage.json"
-        self.header['Host'] = "student.wozaixiaoyuan.com"
-        self.header['JWSESSION'] = self.getJwsession()
-        self.session = requests.session()
-        response = self.session.post(url=url, data=self.body, headers=self.header)
-        res = json.loads(response.text)
-        # 如果 jwsession 无效，则重新 登录 + 打卡
-        if res['code'] == -10:
-            print(res)
-            print('jwsession 无效，将尝试使用账号信息重新登录')
-            self.status_code = 4
-            loginStatus = self.login()
-            if loginStatus:
-                self.PunchIn()
-            else:
-                print(res)
-                print("重新登录失败，请检查账号信息")     
-        elif res['code'] == 0:                    
-            # 标志时段是否有效
-            inSeq = False
-            # 遍历每个打卡时段（不同学校的打卡时段数量可能不一样）
-            for i in res['data']:
-                # 判断时段是否有效
-                if int(i['state']) == 1:
-                    inSeq = True
-                    # 保存当前学校的打卡时段
-                    self.seq = int(i['seq'])
-                    # 判断是否已经打卡
-                    if int(i['type']) == 0:
-                        self.doPunchIn(str(i['seq']))
-                    elif int(i['type']) == 1:
-                        self.status_code = 2
-                        print("已经打过卡了")
-            # 如果当前时间不在任何一个打卡时段内
-            if inSeq == False:            
-                self.status_code = 3
-                print("打卡失败：不在打卡时间段内")
+   function DoSign(id,logId){
+    const url = `https://student.wozaixiaoyuan.com/sign/doSign.json`;
+    const method = `POST`;
+    const headers = {
+    'Accept-Encoding' : `gzip,compress,br,deflate`,
+    'content-type' : `application/x-www-form-urlencoded`,
+    'Connection' : `keep-alive`,
+    'Referer' : `https://servicewechat.com/wxce6d08f781975d91/182/page-frame.html`,
+    'Host' : `student.wozaixiaoyuan.com`,
+    'User-Agent' : `Mozilla/5.0 (Linux; Android 6.0.1; M2 E Build/MMB29U; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/78.0.3904.62 XWEB/2853 MMWEBSDK/20210501 Mobile Safari/537.36 MMWEBID/5060 MicroMessenger/8.0.6.1900(0x2800063D) Process/appbrand0 WeChat/arm64 Weixin NetType/WIFI Language/zh_CN ABI/arm64 MiniProgramEnv/android`,
+    'jwsession' : `bd0c7f5ffa9748d4a6cc8f62085752bb`
+    };
+    const body = `{"id":`+ logId +`,"signId":`+ id +`,"latitude":34.108568,"longitude":108.664053,"country":"中国","province":"陕西省","city":"西安市","district":"鄠邑区","township":"五竹街道"}`;
 
-    # 执行打卡
-    # 参数seq ： 当前打卡的序号
-    def doPunchIn(self, seq):
-        print("正在进行：" + self.getSeq() + "...")
-        url = "https://student.wozaixiaoyuan.com/sign/getSignMessage.json"
-        self.header['Host'] = "student.wozaixiaoyuan.com"
-        self.header['Content-Type'] = "application/x-www-form-urlencoded"
-        self.header['JWSESSION'] = self.getJwsession()
-        sign_data = {
-            "answers": '["0"]',
-            "seq": str(seq),
-            "temperature": utils.getRandomTemperature(os.environ['WZXY_TEMPERATURE']),
-            "latitude": os.environ['WZXY_LATITUDE'],
-            "longitude": os.environ['WZXY_LONGITUDE'],
-            "country": os.environ['WZXY_COUNTRY'],
-            "city": os.environ['WZXY_CITY'],
-            "district": os.environ['WZXY_DISTRICT'],
-            "province": os.environ['WZXY_PROVINCE'],
-            "township": os.environ['WZXY_TOWNSHIP'],
-            "street": os.environ['WZXY_STREET'],
-            "myArea": "",
-            "areacode": "",
-            "userId": ""
+    const myRequest = {
+        url: url,
+        method: method,
+        headers: headers,
+        body: body
+    };
+
+    $task.fetch(myRequest).then(response => {
+        const data = JSON.parse(response.body)
+        if(data.code == 0){
+          $notify("签到成功","签到成功","签到成功")
         }
-        data = urlencode(sign_data)
-        self.session = requests.session()    
-        response = self.session.post(url=url, data=data, headers=self.header)
-        response = json.loads(response.text)
-        # 打卡情况
-        if response["code"] == 0:
-            self.status_code = 1
-            print("打卡成功")
-        else:
-            print(response)
-            print("打卡失败")
-                
-    # 获取打卡时段
-    def getSeq(self):
-        seq = self.seq
-        if seq == 1:
-            return "早打卡"
-        elif seq == 2:
-            return "午打卡"
-        elif seq == 3:
-            return "晚打卡"
-        else:
-            return "非打卡时段"
-    
-    # 获取打卡结果
-    def getResult(self):
-        res = self.status_code
-        if res == 1:
-            return "✅ 打卡成功"
-        elif res == 2:
-            return "✅ 你已经打过卡了，无需重复打卡"
-        elif res == 3:
-            return "❌ 打卡失败，当前不在打卡时间段内"
-        elif res == 4:
-            return "❌ 打卡失败，jwsession 无效"            
-        elif res == 5:
-            return "❌ 打卡失败，登录错误，请检查账号信息"
-        else:
-            return "❌ 打卡失败，发生未知错误，请检查日志"
+      }, reason => {
+          $notify("签到失败","签到失败","签到请求失败")
+      });
+}
 
-    # 推送打卡结果
-    def sendNotification(self):
-        notifyTime = utils.getCurrentTime()
-        notifyResult = self.getResult()
-        notifySeq = self.getSeq()
+function Sign(){
+    GetMessage()
+    DoSign()
+}
 
-        if os.environ.get('SCT_KEY'):
-            # serverchan 推送
-            notifyToken = os.environ['SCT_KEY']
-            url = "https://sctapi.ftqq.com/{}.send"
-            body = {
-                "title": "⏰ 我在校园打卡结果通知",
-                "desp": "打卡项目：日检日报\n\n打卡情况：{}\n\n打卡时段：{}\n\n打卡时间：{}".format(notifyResult, notifySeq, notifyTime)
-            }
-            requests.post(url.format(notifyToken), data=body)
-            print("消息经Serverchan-Turbo推送成功")
-        if os.environ.get('PUSHPLUS_TOKEN'):
-            # pushplus 推送
-            url = 'http://www.pushplus.plus/send'
-            notifyToken = os.environ['PUSHPLUS_TOKEN']
-            content = json.dumps({
-                "打卡项目": "日检日报",
-                "打卡情况": notifyResult,
-                "打卡时段": notifySeq,
-                "打卡时间": notifyTime
-            }, ensure_ascii=False)
-            msg = {
-                "token": notifyToken,
-                "title": "⏰ 我在校园打卡结果通知",
-                "content": content,
-                "template": "json"
-            }
-            requests.post(url, data=msg)
-            print("消息经pushplus推送成功")
-        if os.environ.get('DD_BOT_ACCESS_TOKEN'):
-            # 钉钉推送
-            DD_BOT_ACCESS_TOKEN = os.environ["DD_BOT_ACCESS_TOKEN"]
-            DD_BOT_SECRET = os.environ["DD_BOT_SECRET"]
-            timestamp = str(round(time.time() * 1000))  # 时间戳
-            secret_enc = DD_BOT_SECRET.encode('utf-8')
-            string_to_sign = '{}\n{}'.format(timestamp, DD_BOT_SECRET)
-            string_to_sign_enc = string_to_sign.encode('utf-8')
-            hmac_code = hmac.new(secret_enc, string_to_sign_enc, digestmod=hashlib.sha256).digest()
-            sign = urllib.parse.quote_plus(base64.b64encode(hmac_code))  # 签名
-            print('开始使用 钉钉机器人 推送消息...', end='')
-            url = f'https://oapi.dingtalk.com/robot/send?access_token={DD_BOT_ACCESS_TOKEN}&timestamp={timestamp}&sign={sign}'
-            headers = {'Content-Type': 'application/json;charset=utf-8'}
-            data = {
-                'msgtype': 'text',
-                'text': {'content': f'⏰ 我在校园打卡结果通知\n---------\n打卡项目：日检日报\n\n打卡情况：{notifyResult}\n\n打卡时间: {notifyTime}'}
-            }
-            response = requests.post(url=url, data=json.dumps(data), headers=headers, timeout=15).json()
-            if not response['errcode']:
-                print('消息经钉钉机器人推送成功！')
-            else:
-                print('消息经钉钉机器人推送失败！')
-        if os.environ.get('BARK_TOKEN'):
-            # bark 推送
-            notifyToken = os.environ['BARK_TOKEN']
-            req = "{}/{}/{}".format(notifyToken, "⏰ 我在校园打卡（日检日报）结果通知", notifyResult)
-            requests.get(req)
-            print("消息经bark推送成功")
-        if os.environ.get("MIAO_CODE"):
-            baseurl = "https://miaotixing.com/trigger"
-            body = {
-                "id": os.environ['MIAO_CODE'],
-                "text": "打卡项目：日检日报\n\n打卡情况：{}\n\n打卡时段：{}\n\n打卡时间：{}".format(notifyResult, notifySeq, notifyTime)
-            }
-            requests.post(baseurl, data=body)
-            print("消息经喵推送推送成功")
+
+Sign()
+
+
+
+
+
 
 
 if __name__ == '__main__':
