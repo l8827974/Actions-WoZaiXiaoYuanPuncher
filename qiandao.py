@@ -16,16 +16,11 @@ import urllib.parse
 from urllib.parse import urlencode
 from urllib3.util import Retry
 
-class WoZaiXiaoYuanPuncher:
-# 获取JWSESSION
-def getJwsession(self):
-     if not self.jwsession:  # 读取cache中的配置文件
-         data = utils.processJson(".cache/cache.json").read()
-         self.jwsession = data['jwsession']  
-     return self.jwsession
+data = utils.processJson(".cache/cache.json").read()
+jwsession = data['jwsession']
 
 # 我在校园jwsession,抓包获得
-self.header['JWSESSION'] = self.getJwsession()
+#self.header['JWSESSION'] = self.getJwsession()
 #jwsession = self.getJwsession()
 # 在pushplus网站中可以找到 http://pushplus.hxtrip.com/
 pushplus_token = 'cd51aa7b1a2f44259e7630ad316dfa64'
