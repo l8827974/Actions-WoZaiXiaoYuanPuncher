@@ -3,22 +3,9 @@ import datetime
 import requests
 import json
 import time
-import requests
-import json
-import os
-import time
-import hmac
-import hashlib
-import base64
-import utils
-import urllib
-import urllib.parse
-from urllib.parse import urlencode
-from urllib3.util import Retry
 
 
 # 我在校园jwsession,抓包获得
-#self.header['JWSESSION'] = self.getJwsession()
 jwsession = 'cd51aa7b1a2f44259e7630ad316dfa64'
 # 在pushplus网站中可以找到 http://pushplus.hxtrip.com/
 pushplus_token = 'cd51aa7b1a2f44259e7630ad316dfa64'
