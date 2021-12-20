@@ -136,8 +136,9 @@ def main():
         time.sleep(10)
     elif time_code == -3:
         pushplus_post("签到提醒", "已过签到时间")
+        print("已过签到时间")
     elif time_code == -1:
         pushplus_post("签到提醒", "签到未发布或今天没有签到")
-
+        print("签到未发布或今天没有签到")
 if __name__ == "__main__":
     main()
