@@ -17,49 +17,49 @@ from urllib.parse import urlencode
 from urllib3.util import Retry
 
 
+# 登录
+def login(self):
+    username, password = str(os.environ['WZXY_USERNAME']), str(os.environ['WZXY_PASSWORD'])
+    url = f'{self.loginUrl}?username={username}&password={password}' 
+    self.session = requests.session()
     # 登录
-    def login(self):
-        username, password = str(os.environ['WZXY_USERNAME']), str(os.environ['WZXY_PASSWORD'])
-        url = f'{self.loginUrl}?username={username}&password={password}' 
-        self.session = requests.session()
-        # 登录
-        response = self.session.post(url=url, data=self.body, headers=self.header)
-        res = json.loads(response.text)
-        if res["code"] == 0:
-            print("使用账号信息登录成功")
-            jwsession = response.headers['JWSESSION']
-            self.setJwsession(jwsession)
-            return True
-        else:
-            print(res)
-            print("登录失败，请检查账号信息")
-            self.status_code = 5
-            return False
+    response = self.session.post(url=url, data=self.body, headers=self.header)
+    res = json.loads(response.text)
+    if res["code"] == 0:
+        print("使用账号信息登录成功")
+        jwsession = response.headers['JWSESSION']
+        self.setJwsession(jwsession)
+        return True
+    else:
+        print(res)
+        print("登录失败，请检查账号信息")
+        self.status_code = 5
+        return False
 
-    # 设置JWSESSION
-    def setJwsession(self, jwsession):
-        # 如果找不到cache,新建cache储存目录与文件
-        if not os.path.exists('.cache'): 
-            print("正在创建cache储存目录与文件...")
-            os.mkdir('.cache')
-            data = {"jwsession": jwsession}
-        elif not os.path.exists('.cache/cache.json'):
-            print("正在创建cache文件...")
-            data = {"jwsession": jwsession}
-        # 如果找到cache,读取cache并更新jwsession
-        else:
-            print("找到cache文件，正在更新cache中的jwsession...")
-            data = utils.processJson('.cache/cache.json').read()
-            data['jwsession'] = jwsession                 
-        utils.processJson(".cache/cache.json").write(data)
+# 设置JWSESSION
+def setJwsession(self, jwsession):
+    # 如果找不到cache,新建cache储存目录与文件
+    if not os.path.exists('.cache'): 
+        print("正在创建cache储存目录与文件...")
+        os.mkdir('.cache')
+        data = {"jwsession": jwsession}
+    elif not os.path.exists('.cache/cache.json'):
+        print("正在创建cache文件...")
+        data = {"jwsession": jwsession}
+    # 如果找到cache,读取cache并更新jwsession
+    else:
+        print("找到cache文件，正在更新cache中的jwsession...")
+        data = utils.processJson('.cache/cache.json').read()
+        data['jwsession'] = jwsession                 
+    utils.processJson(".cache/cache.json").write(data)
+    self.jwsession = data['jwsession']  
+
+# 获取JWSESSION
+def getJwsession(self):
+    if not self.jwsession:  # 读取cache中的配置文件
+        data = utils.processJson(".cache/cache.json").read()
         self.jwsession = data['jwsession']  
-    
-    # 获取JWSESSION
-    def getJwsession(self):
-        if not self.jwsession:  # 读取cache中的配置文件
-            data = utils.processJson(".cache/cache.json").read()
-            self.jwsession = data['jwsession']  
-        return self.jwsession
+    return self.jwsession
 
 # 我在校园jwsession,抓包获得
 jwsession = self.getJwsession()
