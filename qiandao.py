@@ -17,68 +17,6 @@ from urllib.parse import urlencode
 from urllib3.util import Retry
 
 class WoZaiXiaoYuanPuncher:
-    def __init__(self):
-        # JWSESSION
-        self.jwsession = None
-        # 打卡时段
-        self.seq = None
-        # 打卡结果
-        self.status_code = 0
-        # 登陆接口
-        self.loginUrl = "https://gw.wozaixiaoyuan.com/basicinfo/mobile/login/username"
-        # 请求头
-        self.header = {
-            "Accept-Encoding": "gzip, deflate, br",
-            "Connection": "keep-alive",
-            "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/8.0.13(0x18000d32) NetType/WIFI Language/zh_CN miniProgram",
-            "Content-Type": "application/json;charset=UTF-8",
-            "Content-Length": "2",
-            "Host": "gw.wozaixiaoyuan.com",
-            "Accept-Language": "en-us,en",
-            "Accept": "application/json, text/plain, */*"
-        }
-        # 请求体（必须有）
-        self.body = "{}"
-
-# 登录
-def login(self):
-    username, password = str(os.environ['WZXY_USERNAME']), str(os.environ['WZXY_PASSWORD'])
-    url = f'{self.loginUrl}?username={username}&password={password}' 
-    self.session = requests.session()
-    # 登录
-    response = self.session.post(url=url, data=self.body, headers=self.header)
-    res = json.loads(response.text)
-    if res["code"] == 0:
-        print("使用账号信息登录成功")
-        jwsession = response.headers['JWSESSION']
-        self.setJwsession(jwsession)
-        return True
-    else:
-        print(res)
-        print("登录失败，请检查账号信息")
-        self.status_code = 5
-        return False
-    
-
-
-# 设置JWSESSION
-def setJwsession(self, jwsession):
-    # 如果找不到cache,新建cache储存目录与文件
-    if not os.path.exists('.cache'): 
-        print("正在创建cache储存目录与文件...")
-        os.mkdir('.cache')
-        data = {"jwsession": jwsession}
-    elif not os.path.exists('.cache/cache.json'):
-        print("正在创建cache文件...")
-        data = {"jwsession": jwsession}
-    # 如果找到cache,读取cache并更新jwsession
-    else:
-        print("找到cache文件，正在更新cache中的jwsession...")
-        data = utils.processJson('.cache/cache.json').read()
-        data['jwsession'] = jwsession                 
-    utils.processJson(".cache/cache.json").write(data)
-    self.jwsession = data['jwsession']  
-
 # 获取JWSESSION
 def getJwsession(self):
      if not self.jwsession:  # 读取cache中的配置文件
