@@ -16,6 +16,29 @@ import urllib.parse
 from urllib.parse import urlencode
 from urllib3.util import Retry
 
+class WoZaiXiaoYuanPuncher:
+    def __init__(self):
+        # JWSESSION
+        self.jwsession = None
+        # 打卡时段
+        self.seq = None
+        # 打卡结果
+        self.status_code = 0
+        # 登陆接口
+        self.loginUrl = "https://gw.wozaixiaoyuan.com/basicinfo/mobile/login/username"
+        # 请求头
+        self.header = {
+            "Accept-Encoding": "gzip, deflate, br",
+            "Connection": "keep-alive",
+            "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/8.0.13(0x18000d32) NetType/WIFI Language/zh_CN miniProgram",
+            "Content-Type": "application/json;charset=UTF-8",
+            "Content-Length": "2",
+            "Host": "gw.wozaixiaoyuan.com",
+            "Accept-Language": "en-us,en",
+            "Accept": "application/json, text/plain, */*"
+        }
+        # 请求体（必须有）
+        self.body = "{}"
 
 # 登录
 def login(self):
@@ -35,6 +58,8 @@ def login(self):
         print("登录失败，请检查账号信息")
         self.status_code = 5
         return False
+    
+
 
 # 设置JWSESSION
 def setJwsession(self, jwsession):
@@ -150,31 +175,7 @@ def contrast_date(sign_message):
         return -1
 
 
-def main():
-    # while True:
-    #     time_now = time.strftime("%H:%M:%S", time.localtime())
-    #     if time_now == "21:40:00" or time_now == "21:40:01":
-    #         # 得到最新的签到信息
-    #         sign_info = get_sign_message()
-    #         # 比对签到信息
-    #         time_code = contrast_date(sign_info)
-    #         if time_code == 0:
-    #             do_sign(sign_info)
-    #             time.sleep(10)
-    #         elif time_code == -2:
-    #             # 签到是今天但是签到没有开始，静默等待
-    #             while time_code == 0:
-    #                 time.sleep(10)
-    #                 time_code = contrast_date(sign_info)
-    #             # 时间开始之后执行签到
-    #             do_sign(sign_info)
-    #             time.sleep(10)
-    #         elif time_code == -3:
-    #             pushplus_post("签到提醒", "已过签到时间")
-    #         elif time_code == -1:
-    #             pushplus_post("签到提醒", "签到未发布或今天没有签到")
-    #     time.sleep(2)
-
+def qiandao(self):
     # 得到最新的签到信息
     sign_info = get_sign_message()
     # 比对签到信息
@@ -194,6 +195,87 @@ def main():
         pushplus_post("签到提醒", "已过签到时间")
     elif time_code == -1:
         pushplus_post("签到提醒", "签到未发布或今天没有签到")
+# 推送打卡结果
+    def sendNotification(self):
+        notifyTime = utils.getCurrentTime()
+        notifyResult = self.getResult()
+        notifySeq = self.getSeq()
 
+        if os.environ.get('SCT_KEY'):
+            # serverchan 推送
+            notifyToken = os.environ['SCT_KEY']
+            url = "https://sctapi.ftqq.com/{}.send"
+            body = {
+                "title": "⏰ 我在校园打卡结果通知",
+                "desp": "打卡项目：日检日报\n\n打卡情况：{}\n\n打卡时段：{}\n\n打卡时间：{}".format(notifyResult, notifySeq, notifyTime)
+            }
+            requests.post(url.format(notifyToken), data=body)
+            print("消息经Serverchan-Turbo推送成功")
+        if os.environ.get('PUSHPLUS_TOKEN'):
+            # pushplus 推送
+            url = 'http://www.pushplus.plus/send'
+            notifyToken = os.environ['PUSHPLUS_TOKEN']
+            content = json.dumps({
+                "打卡项目": "日检日报",
+                "打卡情况": notifyResult,
+                "打卡时段": notifySeq,
+                "打卡时间": notifyTime
+            }, ensure_ascii=False)
+            msg = {
+                "token": notifyToken,
+                "title": "⏰ 我在校园打卡结果通知",
+                "content": content,
+                "template": "json"
+            }
+            requests.post(url, data=msg)
+            print("消息经pushplus推送成功")
+        if os.environ.get('DD_BOT_ACCESS_TOKEN'):
+            # 钉钉推送
+            DD_BOT_ACCESS_TOKEN = os.environ["DD_BOT_ACCESS_TOKEN"]
+            DD_BOT_SECRET = os.environ["DD_BOT_SECRET"]
+            timestamp = str(round(time.time() * 1000))  # 时间戳
+            secret_enc = DD_BOT_SECRET.encode('utf-8')
+            string_to_sign = '{}\n{}'.format(timestamp, DD_BOT_SECRET)
+            string_to_sign_enc = string_to_sign.encode('utf-8')
+            hmac_code = hmac.new(secret_enc, string_to_sign_enc, digestmod=hashlib.sha256).digest()
+            sign = urllib.parse.quote_plus(base64.b64encode(hmac_code))  # 签名
+            print('开始使用 钉钉机器人 推送消息...', end='')
+            url = f'https://oapi.dingtalk.com/robot/send?access_token={DD_BOT_ACCESS_TOKEN}&timestamp={timestamp}&sign={sign}'
+            headers = {'Content-Type': 'application/json;charset=utf-8'}
+            data = {
+                'msgtype': 'text',
+                'text': {'content': f'⏰ 我在校园打卡结果通知\n---------\n打卡项目：日检日报\n\n打卡情况：{notifyResult}\n\n打卡时间: {notifyTime}'}
+            }
+            response = requests.post(url=url, data=json.dumps(data), headers=headers, timeout=15).json()
+            if not response['errcode']:
+                print('消息经钉钉机器人推送成功！')
+            else:
+                print('消息经钉钉机器人推送失败！')
+        if os.environ.get('BARK_TOKEN'):
+            # bark 推送
+            notifyToken = os.environ['BARK_TOKEN']
+            req = "{}/{}/{}".format(notifyToken, "⏰ 我在校园打卡（日检日报）结果通知", notifyResult)
+            requests.get(req)
+            print("消息经bark推送成功")
+        if os.environ.get("MIAO_CODE"):
+            baseurl = "https://miaotixing.com/trigger"
+            body = {
+                "id": os.environ['MIAO_CODE'],
+                "text": "打卡项目：日检日报\n\n打卡情况：{}\n\n打卡时段：{}\n\n打卡时间：{}".format(notifyResult, notifySeq, notifyTime)
+            }
+            requests.post(baseurl, data=body)
+            print("消息经喵推送推送成功")
 if __name__ == "__main__":
+     wzxy = WoZaiXiaoYuanPuncher()
+    if not os.path.exists('.cache'):
+        print("找不到cache文件，正在使用账号信息登录...")
+        loginStatus = wzxy.login()
+        if loginStatus:
+            wzxy.qiandao()
+        else:
+            print("登陆失败，请检查账号信息")
+    else:
+        print("找到cache文件，尝试使用jwsession打卡...")
+        wzxy.qiandao()
+    wzxy.sendNotification()
     main()
