@@ -22,14 +22,13 @@ class WoZaiXiaoYuanPuncher:
         # 打卡结果
         self.status_code = 0
         # 登陆接口
-        self.loginUrl = "https://gw.wozaixiaoyuan.com/basicinfo/mobile/login/username"
+        self.loginUrl = "https://student.wozaixiaoyuan.com/sign/getSignMessage.json "
         # 请求头
         self.header = {
             "Host": "student.wozaixiaoyuan.com",
             "Connection": "keep-alive",
-            "charset": "utf-8"
+            "charset": "utf-8",
             "Content-Type": "application/x-www-form-urlencoded",
-            "jwsession": "bd0c7f5ffa9748d4a6cc8f62085752bb"
             "User-Agent": "Mozilla/5.0 (Linux; Android 6.0.1; M2 E Build/MMB29U; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/78.0.3904.62 XWEB/2853 MMWEBSDK/20210501 Mobile Safari/537.36 MMWEBID/5060 MicroMessenger/8.0.6.1900(0x2800063D) Process/appbrand0 WeChat/arm64 Weixin NetType/WIFI Language/zh_CN ABI/arm64 MiniProgramEnv/android",
             "Accept-Encoding": "gzip,compress,br,deflate",
             "Referer": "https://servicewechat.com/wxce6d08f781975d91/182/page-frame.html"
@@ -85,7 +84,7 @@ class WoZaiXiaoYuanPuncher:
     # 获取打卡列表，判断当前打卡时间段与打卡情况，符合条件则自动进行打卡
     def PunchIn(self):
         print("获取打卡列表中...")
-        url = "https://student.wozaixiaoyuan.com/heat/getTodayHeatList.json"
+        url = "https://student.wozaixiaoyuan.com/sign/getSignMessage.json"
         self.header['Host'] = "student.wozaixiaoyuan.com"
         self.header['JWSESSION'] = self.getJwsession()
         self.session = requests.session()
@@ -127,7 +126,7 @@ class WoZaiXiaoYuanPuncher:
     # 参数seq ： 当前打卡的序号
     def doPunchIn(self, seq):
         print("正在进行：" + self.getSeq() + "...")
-        url = "https://student.wozaixiaoyuan.com/heat/save.json"
+        url = "https://student.wozaixiaoyuan.com/sign/getSignMessage.json"
         self.header['Host'] = "student.wozaixiaoyuan.com"
         self.header['Content-Type'] = "application/x-www-form-urlencoded"
         self.header['JWSESSION'] = self.getJwsession()
