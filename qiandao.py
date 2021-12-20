@@ -19,7 +19,7 @@ from urllib3.util import Retry
 # 我在校园jwsession,抓包获得
 data = utils.processJson(".cache/cache.json").read()
 jwsession = data['jwsession']  
-#jwsession = '43f311ed4d094adcbc6e5138caec603e'
+jwsession = '43f311ed4d094adcbc6e5138caec603e'
 # 在pushplus网站中可以找到 http://pushplus.hxtrip.com/
 pushplus_token = 'cd51aa7b1a2f44259e7630ad316dfa64'
 
