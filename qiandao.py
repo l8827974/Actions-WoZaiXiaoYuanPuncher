@@ -1,14 +1,12 @@
-# -*- encoding:utf-8 -*-
 import datetime
 import requests
 import json
 import time
 
-
 # 我在校园jwsession,抓包获得
-jwsession = 'cd51aa7b1a2f44259e7630ad316dfa64'
+jwsession = ""
 # 在pushplus网站中可以找到 http://pushplus.hxtrip.com/
-pushplus_token = 'cd51aa7b1a2f44259e7630ad316dfa64'
+pushplus_token = ''
 
 
 def pushplus_post(title, content):
@@ -52,8 +50,8 @@ def do_sign(sign_message):
         "signId": str(sign_message['id']),
         "city": "西安市",
         "id": str(sign_message['logId']),
-        "latitude": '34.108568',
-        "longitude": '108.664053',
+        "latitude": '34.10133361816406',
+        "longitude": '108.65825653076172',
         "country": "中国",
         "district": "鄠邑区",
         "township": "五竹街道",
@@ -94,7 +92,31 @@ def contrast_date(sign_message):
         return -1
 
 
-def qiandao(self):
+def main():
+    # while True:
+    #     time_now = time.strftime("%H:%M:%S", time.localtime())
+    #     if time_now == "21:40:00" or time_now == "21:40:01":
+    #         # 得到最新的签到信息
+    #         sign_info = get_sign_message()
+    #         # 比对签到信息
+    #         time_code = contrast_date(sign_info)
+    #         if time_code == 0:
+    #             do_sign(sign_info)
+    #             time.sleep(10)
+    #         elif time_code == -2:
+    #             # 签到是今天但是签到没有开始，静默等待
+    #             while time_code == 0:
+    #                 time.sleep(10)
+    #                 time_code = contrast_date(sign_info)
+    #             # 时间开始之后执行签到
+    #             do_sign(sign_info)
+    #             time.sleep(10)
+    #         elif time_code == -3:
+    #             pushplus_post("签到提醒", "已过签到时间")
+    #         elif time_code == -1:
+    #             pushplus_post("签到提醒", "签到未发布或今天没有签到")
+    #     time.sleep(2)
+
     # 得到最新的签到信息
     sign_info = get_sign_message()
     # 比对签到信息
@@ -114,19 +136,6 @@ def qiandao(self):
         pushplus_post("签到提醒", "已过签到时间")
     elif time_code == -1:
         pushplus_post("签到提醒", "签到未发布或今天没有签到")
-if __name__ == "__main__":
-     wzxy = WoZaiXiaoYuanPuncher()
-    if not os.path.exists('.cache'):
-        print("找不到cache文件，正在使用账号信息登录...")
-        loginStatus = wzxy.login()
-        if loginStatus:
-            wzxy.qiandao()
-        else:
-            print("登陆失败，请检查账号信息")
-    else:
-        print("找到cache文件，尝试使用jwsession打卡...")
-        wzxy.qiandao()
-    wzxy.sendNotification()
-    main()
 
-    
+if __name__ == "__main__":
+    main()
