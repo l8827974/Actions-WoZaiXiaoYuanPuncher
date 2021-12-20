@@ -16,8 +16,6 @@ import urllib.parse
 from urllib.parse import urlencode
 from urllib3.util import Retry
 
-data = utils.processJson(".cache/cache.json").read()
-jwsession = data['jwsession']
 
 # 我在校园jwsession,抓包获得
 #self.header['JWSESSION'] = self.getJwsession()
