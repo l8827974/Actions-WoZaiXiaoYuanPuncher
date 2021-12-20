@@ -6,7 +6,7 @@ import time
 # 我在校园jwsession,抓包获得
 jwsession = '43f311ed4d094adcbc6e5138caec603e'
 # 在pushplus网站中可以找到 http://pushplus.hxtrip.com/
-pushplus_token = '2374f807b2064f02a584d2ef9ab2e2dd'
+pushplus_token = 'cd51aa7b1a2f44259e7630ad316dfa64'
 
 
 def pushplus_post(title, content):
