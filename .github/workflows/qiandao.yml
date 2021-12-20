@@ -31,27 +31,6 @@ jobs:
         key: ${{ secrets.CACHE_NAME }}-${{ github.run_id }}
         restore-keys: ${{ secrets.CACHE_NAME }}-
     - name: Run script
-      env:
-        DD_BOT_ACCESS_TOKEN: ${{secrets.DD_BOT_ACCESS_TOKEN}}
-        DD_BOT_SECRET: ${{secrets.DD_BOT_SECRET}}
-        SCT_KEY: ${{secrets.SCT_KEY}}
-        GOBOT_URL: ${{secrets.GOBOT_URL}}
-        GOBOT_QQ: ${{secrets.GOBOT_QQ}}
-        GOBOT_TOKEN: ${{secrets.GOBOT_TOKEN}}
-        BARK_TOKEN: ${{secrets.BARK_TOKEN}}
-        PUSHPLUS_TOKEN: ${{secrets.PUSHPLUS_TOKEN}}
-        MIAO_CODE: ${{secrets.MIAO_CODE}}
-        WZXY_USERNAME: ${{secrets.USERNAME}}
-        WZXY_PASSWORD: ${{secrets.PASSWORD}}
-        WZXY_TEMPERATURE: ${{secrets.TEMPERATURE}}
-        WZXY_LATITUDE: ${{secrets.LATITUDE}}
-        WZXY_LONGITUDE: ${{secrets.LONGITUDE}}
-        WZXY_COUNTRY: ${{secrets.COUNTRY}}
-        WZXY_CITY: ${{secrets.CITY}}
-        WZXY_DISTRICT: ${{secrets.DISTRICT}}
-        WZXY_PROVINCE: ${{secrets.PROVINCE}}
-        WZXY_TOWNSHIP: ${{secrets.TOWNSHIP}}
-        WZXY_STREET: ${{secrets.STREET}}
       run: python qiandao.py
 
   ## 多账户配置示例，请复制下面的代码后取消注释再修改，粘贴时注意缩进
