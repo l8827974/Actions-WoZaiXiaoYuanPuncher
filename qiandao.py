@@ -2,20 +2,24 @@ import datetime
 import requests
 import json
 import time
+import datetime
+import requests
+import json
+import time
 import os
 import hmac
 import hashlib
 import base64
-import utils
 import urllib
+import utils
 import urllib.parse
 from urllib.parse import urlencode
 from urllib3.util import Retry
 
-#data = utils.processJson(".cache/cache.json").read()
-#jwsession = data['jwsession']  
 # 我在校园jwsession,抓包获得
-jwsession = '43f311ed4d094adcbc6e5138caec603e'
+data = utils.processJson(".cache/cache.json").read()
+jwsession = data['jwsession']  
+#jwsession = '43f311ed4d094adcbc6e5138caec603e'
 # 在pushplus网站中可以找到 http://pushplus.hxtrip.com/
 pushplus_token = 'cd51aa7b1a2f44259e7630ad316dfa64'
 
@@ -149,5 +153,6 @@ def main():
     elif time_code == -1:
         pushplus_post("签到提醒", "签到未发布或今天没有签到")
         print("签到未发布或今天没有签到")
+
 if __name__ == "__main__":
     main()
