@@ -25,7 +25,7 @@ pushplus_token = '138be1dd7f234eada003f2afb41f5ffc'
 
 
 def pushplus_post(title, content):
-    url = 'http://pushplus.hxtrip.com/send'
+    url = 'http://www.pushplus.plus/send'
     data = {
         "token": pushplus_token,
         "title": title,
