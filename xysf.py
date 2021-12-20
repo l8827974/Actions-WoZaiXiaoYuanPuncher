@@ -131,7 +131,7 @@ class WoZaiXiaoYuanPuncher:
         self.header['Content-Type'] = "application/x-www-form-urlencoded"
         self.header['JWSESSION'] = self.getJwsession()
         sign_data = {
-            "answers": '["0"]',
+            "answers": '["0"]["无"]["无"]["无"]["无"]["无"]["0"]["0"]',
             "seq": str(seq),
             "temperature": utils.getRandomTemperature(os.environ['WZXY_TEMPERATURE']),
             "latitude": os.environ['WZXY_LATITUDE'],
