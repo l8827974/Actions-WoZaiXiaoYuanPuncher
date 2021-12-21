@@ -204,7 +204,7 @@ class WoZaiXiaoYuanPuncher:
             print("消息经Serverchan-Turbo推送成功")
         if os.environ.get('PUSHPLUS_TOKEN'):
             # pushplus 推送
-            url = 'https://www.pushplus.plus/send'
+            url = 'http://pushplus.hxtrip.com/send'
             notifyToken = os.environ['PUSHPLUS_TOKEN']
             content = json.dumps({
                 "打卡项目": "日检日报",
