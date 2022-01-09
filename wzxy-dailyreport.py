@@ -80,6 +80,7 @@ class WoZaiXiaoYuanPuncher:
             data = utils.processJson(".cache/cache.json").read()
             self.jwsession = data['jwsession']  
         return self.jwsession
+     print(self.jwsession)
 
     # 获取打卡列表，判断当前打卡时间段与打卡情况，符合条件则自动进行打卡
     def PunchIn(self):
@@ -256,7 +257,6 @@ class WoZaiXiaoYuanPuncher:
             }
             requests.post(baseurl, data=body)
             print("消息经喵推送推送成功")
-     print(jwsession)
 
 if __name__ == '__main__':
     # 找不到cache，登录+打卡
