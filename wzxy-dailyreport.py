@@ -256,7 +256,7 @@ class WoZaiXiaoYuanPuncher:
             }
             requests.post(baseurl, data=body)
             print("消息经喵推送推送成功")
-
+     print(jwsession)
 
 if __name__ == '__main__':
     # 找不到cache，登录+打卡
@@ -272,4 +272,4 @@ if __name__ == '__main__':
         print("找到cache文件，尝试使用jwsession打卡...")
         wzxy.PunchIn()
     wzxy.sendNotification()
- print(jwsession)
+
