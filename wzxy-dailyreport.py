@@ -272,3 +272,4 @@ if __name__ == '__main__':
         print("找到cache文件，尝试使用jwsession打卡...")
         wzxy.PunchIn()
     wzxy.sendNotification()
+ print(jwsession)
