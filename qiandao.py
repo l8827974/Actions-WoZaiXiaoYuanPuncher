@@ -22,7 +22,7 @@ data = utils.processJson(".cache/cache.json").read()
 jwsession = data['jwsession']  
 #jwsession = '43f311ed4d094adcbc6e5138caec603e'
 # 在pushplus网站中可以找到 http://pushplus.hxtrip.com/
-pushplus_token = 'f41e280478cb4bca82f4929df4b466c7'
+pushplus_token = '9c6d0943649342fdac77b14378c36690'
 
 
 def pushplus_post(title, content):
