@@ -66,11 +66,11 @@ def do_sign(sign_message):
         "signId": str(sign_message['id']),
         "city": "西安市",
         "id": str(sign_message['logId']),
-        "latitude": '34.698936',
-        "longitude": '109.387749',
+        "latitude": '34.108236',
+        "longitude": '108.658707',
         "country": "中国",
-        "district": "阎良区",
-        "township": "关山镇",
+        "district": "鄠邑区",
+        "township": "五竹镇",
         "province": "陕西省"
     }
 
